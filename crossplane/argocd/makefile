@@ -10,9 +10,9 @@ run:
 	kubectl create namespace argocd
 	kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 	kubectl apply -f secrets/secret.yaml
-	kubectl apply -f argocd/apps/crossplane.yaml
-	kubectl apply -f argocd/apps/compositions.yaml
-	kubectl apply -f argocd/apps/website.yaml
+	kubectl apply -f apps/crossplane.yaml
+	kubectl apply -f apps/compositions.yaml
+	kubectl apply -f apps/website.yaml
 
-local-render:
+local-render:	
 	crossplane render app.yaml composition.yaml pkg.yaml
