@@ -9,5 +9,5 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: kubecon-repo
+    name: flux-system
   targetNamespace: default
