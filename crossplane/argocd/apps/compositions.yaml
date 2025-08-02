@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: compositions
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  sources:
+    - path: crossplane/argocd/resources/compositions
+      repoURL: https://github.com/dag-andersen/kubecon-us-2025-code.git
+      targetRevision: main

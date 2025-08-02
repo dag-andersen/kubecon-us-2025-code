@@ -1,12 +1,18 @@
+gen-secret:
+	mkdir -p secrets
+	@echo "Please enter your GitHub token:"
+	@read github_token && cat secret_template.yaml | sed "s/GITHUB_TOKEN/$${github_token}/g" > secrets/secret.yaml
+
 run:
 	kind delete cluster --name crossplane || true
 	kind create cluster --name crossplane
-	helm repo add crossplane-preview https://charts.crossplane.io/preview
-	sleep 5
-	helm install crossplane \
-		--namespace crossplane-system \
-		--create-namespace crossplane-preview/crossplane \
-		--version v2.0.0-preview.1
+	# install argocd
+	kubectl create namespace argocd
+	kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+	kubectl apply -f secrets/secret.yaml
+	kubectl apply -f argocd/apps/crossplane.yaml
+	kubectl apply -f argocd/apps/compositions.yaml
+	kubectl apply -f argocd/apps/website.yaml
 
 local-render:
 	crossplane render app.yaml composition.yaml pkg.yaml
