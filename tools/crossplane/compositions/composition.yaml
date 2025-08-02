@@ -1,0 +1,102 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: website-templated-yaml
+spec:
+  compositeTypeRef:
+    apiVersion: example.my-domain.io/v1
+    kind: Website
+  mode: Pipeline
+  pipeline:
+
+  - step: create-deployment-service-and-ingress
+    functionRef:
+      name: crossplane-contrib-function-go-templating
+    input:
+      apiVersion: gotemplating.fn.crossplane.io/v1beta1
+      kind: GoTemplate
+      source: Inline
+      inline:
+        template: |
+          ---
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            annotations:
+              gotemplating.fn.crossplane.io/composition-resource-name: deployment
+              {{ if eq (.observed.resources.deployment | getResourceCondition "Available").Status "True" }}
+              gotemplating.fn.crossplane.io/ready: "True"
+              {{ end }}
+            labels:
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
+          spec:
+            replicas: {{ .observed.composite.resource.spec.deployment.replicas | default 1 }}
+            selector:
+              matchLabels:
+                example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
+            template:
+              metadata:
+                labels:
+                  example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
+              spec:
+                containers:
+                - name: website
+                  image: {{ .observed.composite.resource.spec.deployment.image }}
+                  ports:
+                  - containerPort: {{ .observed.composite.resource.spec.service.port | default 80 }}
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            annotations:
+              gotemplating.fn.crossplane.io/composition-resource-name: service
+              {{ if (get (getComposedResource . "service").spec "clusterIP") }}
+              gotemplating.fn.crossplane.io/ready: "True"
+              {{ end }}
+            labels:
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
+          spec:
+            selector:
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
+            ports:
+            - protocol: TCP
+              port: {{ .observed.composite.resource.spec.service.port | default 80 }}
+              targetPort: {{ .observed.composite.resource.spec.service.port | default 80 }}
+          ---
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            annotations:
+              gotemplating.fn.crossplane.io/composition-resource-name: ingress
+              {{ if (get (getComposedResource . "ingress").status "loadBalancer") }}
+              gotemplating.fn.crossplane.io/ready: "True"
+              {{ end }}
+            labels:
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
+          spec:
+            rules:
+            - host: {{ .observed.composite.resource.spec.ingress.hostname }}
+              http:
+                paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: {{ .observed.composite.resource.metadata.name }}
+                      port:
+                        number: {{ .observed.composite.resource.spec.service.port | default 80 }}
+          ---
+          apiVersion: example.my-domain.io/v1
+          kind: Website
+          status:
+            replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}
+            address: {{ get (getComposedResource . "service").spec "clusterIP" | default "" | quote }}  
+# apiVersion: example.crossplane.io/v1
+# kind: Website
+# status:
+#   replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}
+#   address: {{ get (getComposedResource . "service").spec "clusterIP" | default "" | quote }}       
+
+  - step: crossplane-contrib-function-auto-ready
+    functionRef:
+      name: crossplane-contrib-function-auto-ready

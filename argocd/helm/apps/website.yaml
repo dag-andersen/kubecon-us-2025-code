@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: helm-website-example
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  sources:
+    - repoURL: https://github.com/dag-andersen/kubecon-us-2025-code.git
+      ref: local-files
+    - path: tools/helm/my-chart
+      repoURL: https://github.com/dag-andersen/kubecon-us-2025-code.git
+      targetRevision: main
+      helm:
+        valueFiles:
+          - $local-files/tools/helm/production.yaml

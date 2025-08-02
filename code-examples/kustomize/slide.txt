@@ -1,0 +1,23 @@
+├── base
+│   ├── deployment.yaml
+│   ├── ingress.yaml
+│   ├── kustomization.yaml
+│   └── service.yaml
+└── overlays
+    ├── development
+    │   ├── deployment-patch.yaml
+    │   ├── ingress-patch.yaml
+    │   └── kustomization.yaml
+    ├── production
+    │   ├── deployment-patch.yaml
+    │   ├── ingress-patch.yaml
+    │   └── kustomization.yaml
+    ├── qa
+    │   ├── deployment-patch.yaml
+    │   ├── ingress-patch.yaml
+    │   └── kustomization.yaml
+    └── staging
+        ├── deployment-patch.yaml
+        ├── ingress-patch.yaml
+        └── kustomization.yaml
+

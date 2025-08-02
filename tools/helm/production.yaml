@@ -1,0 +1,15 @@
+replicaCount: 2
+
+image:
+  repository: my-website:v1
+
+service:
+  port: 80
+
+ingress:
+  enabled: true
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific

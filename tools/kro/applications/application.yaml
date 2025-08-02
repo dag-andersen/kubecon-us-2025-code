@@ -1,0 +1,13 @@
+apiVersion: kro.run/v1alpha1
+kind: Website
+metadata:
+  name: website-example
+spec:
+  name: website-example
+  ingress:
+    hostname: website-example.example.com
+  service:
+    port: 80
+  deployment:
+    image: nginx:does-not-exist
+    replicas: 2

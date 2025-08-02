@@ -1,0 +1,70 @@
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: websites.example.my-domain.io
+spec:
+  scope: Namespaced
+  group: example.my-domain.io
+  names:
+    kind: Website
+    plural: websites
+  versions:
+  - name: v1
+    served: true
+    referenceable: true
+    schema:
+     openAPIV3Schema:
+       type: object
+       properties:
+        spec:
+          type: object
+          properties:
+            name:
+              description: The name of the website.
+              type: string
+            deployment:
+              description: Deployment configuration.
+              type: object
+              properties:
+                image:
+                  description: The container image.
+                  type: string
+                replicas:
+                  description: The number of replicas.
+                  type: integer
+                  default: 1
+              required:
+              - image
+            service:
+              description: Service configuration.
+              type: object
+              properties:
+                port:
+                  description: The service port.
+                  type: integer
+                  default: 80
+              required:
+              - port
+            ingress:
+              description: Ingress configuration.
+              type: object
+              properties:
+                hostname:
+                  description: The hostname for the ingress.
+                  type: string
+              required:
+              - hostname
+          required:
+          - name
+          - deployment
+          - service
+          - ingress
+        status:
+          type: object
+          properties:
+            replicas:
+              description: The number of available replicas.
+              type: integer
+            address:
+              description: The service's cluster IP address.
+              type: string

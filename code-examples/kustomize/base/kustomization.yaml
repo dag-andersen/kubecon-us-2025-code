@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: simple-web-app-base
+
+resources:
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+
+commonLabels:
+  app: simple-web-app
+  version: v1.0.0
+
+images:
+- name: nginx
+  newTag: 1.21-alpine
+
+configMapGenerator:
+- name: app-metadata
+  literals:
+  - created-by=kustomize
+  - base-config=true
