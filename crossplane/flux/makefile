@@ -1,5 +1,6 @@
 
 # UI
+# kubectl -n flux-system port-forward svc/capacitor 9000:9000
 # https://fluxcd.io/blog/2024/02/introducing-capacitor/
 
 # kubectl tree apps/my-app -n default
