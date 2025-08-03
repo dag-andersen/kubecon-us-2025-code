@@ -1,4 +1,11 @@
 
+# UI
+# https://fluxcd.io/blog/2024/02/introducing-capacitor/
+
+# kubectl tree apps/my-app -n default
+# vs.
+# flux tree kustomization website-example
+
 bootstrap:
 	kind delete cluster --name crossplane || true
 	kind create cluster --name crossplane
@@ -11,9 +18,6 @@ bootstrap:
 		--branch=main \
 		--path=./crossplane/flux/clusters/kind \
 		--personal
-	kubectl apply -f apps/crossplane.yaml
-	kubectl apply -f apps/compositions.yaml
-	kubectl apply -f apps/website.yaml
 
 # run-manual:
 # 	kind delete cluster --name crossplane || true

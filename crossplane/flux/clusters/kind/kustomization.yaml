@@ -4,3 +4,4 @@ resources:
   - crossplane.yaml
   - compositions.yaml
   - website.yaml
+  - capacitor.yaml
