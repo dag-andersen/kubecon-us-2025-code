@@ -16,5 +16,5 @@ spec:
       - CreateNamespace=true
   sources:
     - chart: crossplane
-      repoURL: "https://charts.crossplane.io/preview"
-      targetRevision: v2.0.0-preview.1
+      repoURL: "https://charts.crossplane.io/stable"
+      targetRevision: 2.0.0-rc.1
