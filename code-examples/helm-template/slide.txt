@@ -1,0 +1,19 @@
+example-chart
+├── Chart.yaml
+├── charts
+├── templates
+│   ├── _helpers.tpl
+│   ├── deployment.yaml
+│   ├── hpa.yaml
+│   ├── ingress.yaml
+│   ├── service.yaml
+│   └── serviceaccount.yaml
+└── values.yaml
+values
+
+helm template my-release ./my-chart \
+  --values custom-values.yaml \
+  --set replicaCount=3 \
+  --set image.tag=1.2.3
+
+

@@ -1,0 +1,52 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: simple-web-app-qa
+
+resources:
+- ../../base
+
+namePrefix: qa-
+nameSuffix: -qa
+
+commonLabels:
+  environment: qa
+  tier: testing
+
+replicas:
+- name: simple-web-app
+  count: 1
+
+images:
+- name: nginx
+  newTag: 1.21-alpine
+
+configMapGenerator:
+- name: app-config
+  behavior: merge
+  literals:
+  - app.environment=qa
+  - debug.enabled=true
+  - app.version=1.0.0-qa
+  - test.mode=enabled
+
+patchesStrategicMerge:
+- ingress-patch.yaml
+- deployment-patch.yaml
+
+patches:
+- target:
+    kind: ConfigMap
+    name: app-config
+  patch: |-
+    - op: replace
+      path: /data/app.properties
+      value: |
+        app.name=Simple Web Application
+        app.version=1.0.0-qa
+        app.environment=qa
+        debug.enabled=true
+        log.level=DEBUG
+        test.mode=enabled
+        mock.data=true
