@@ -3,13 +3,18 @@ gen-secret:
 	@echo "Please enter your GitHub token:"
 	@read github_token && cat secret_template.yaml | sed "s/GITHUB_TOKEN/$${github_token}/g" > secrets/secret.yaml
 
-run:
+create-cluster:
 	kind delete cluster --name kro || true
 	kind create cluster --name kro
-	# install argocd
+
+install-argocd:
 	kubectl create namespace argocd
 	kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 	kubectl apply -f secrets/secret.yaml
+
+install-kro:
 	kubectl apply -f apps/kro.yaml
 	kubectl apply -f apps/kro-definitions.yaml
 	kubectl apply -f apps/applications.yaml
+
+run: create-cluster install-argocd install-kro
