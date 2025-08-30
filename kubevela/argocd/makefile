@@ -13,6 +13,7 @@ run:
 	kubectl apply -f apps/kubevela.yaml
 	kubectl apply -f apps/kubevela-definitions.yaml
 	kubectl apply -f apps/applications.yaml
+	kubectl config set-context --current --namespace=argocd
 
 local-render:	
 	kubectl apply --dry-run=client -o yaml -f resources/kubevela-definitions/ -f resources/applications/

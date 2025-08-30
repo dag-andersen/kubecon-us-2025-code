@@ -2,8 +2,6 @@ apiVersion: core.oam.dev/v1beta1
 kind: ComponentDefinition
 metadata:
   name: my-app
-  annotations:
-    definition.oam.dev/description: "My custom application component"
 spec:
   workload:
     definition:
