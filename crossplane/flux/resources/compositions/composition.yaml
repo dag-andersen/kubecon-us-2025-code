@@ -8,6 +8,7 @@ spec:
     kind: App
   mode: Pipeline
   pipeline:
+
   - step: create-deployment-and-service
     functionRef:
       name: crossplane-contrib-function-go-templating
@@ -67,3 +68,7 @@ spec:
           status:
             replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}
             address: {{ get (getComposedResource . "service").spec "clusterIP" | default "" | quote }}       
+
+  - step: crossplane-contrib-function-auto-ready
+    functionRef:
+      name: crossplane-contrib-function-auto-ready

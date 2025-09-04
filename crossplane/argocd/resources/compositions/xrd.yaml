@@ -20,7 +20,7 @@ spec:
           type: object
           properties:
             image:
-              description: The app's OCI container image.
+              description: The container image.
               type: string
           required:
           - image
@@ -28,7 +28,7 @@ spec:
           type: object
           properties:
             replicas:
-              description: The number of available app replicas.
+              description: The number replicas.
               type: integer
             address:
               description: The app's IP address.
