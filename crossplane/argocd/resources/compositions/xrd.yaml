@@ -1,10 +1,10 @@
 apiVersion: apiextensions.crossplane.io/v2
 kind: CompositeResourceDefinition
 metadata:
-  name: apps.example.crossplane.io
+  name: apps.example.my-domain.io
 spec:
   scope: Namespaced
-  group: example.crossplane.io
+  group: example.my-domain.io
   names:
     kind: App
     plural: apps

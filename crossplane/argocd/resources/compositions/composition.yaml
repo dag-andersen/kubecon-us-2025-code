@@ -4,7 +4,7 @@ metadata:
   name: app-templated-yaml
 spec:
   compositeTypeRef:
-    apiVersion: example.crossplane.io/v1
+    apiVersion: example.my-domain.io/v1
     kind: App
   mode: Pipeline
   pipeline:
