@@ -63,7 +63,7 @@ spec:
               port: 8080
               targetPort: 80
           ---
-          apiVersion: example.crossplane.io/v1
+          apiVersion: example.my-domain.io/v1
           kind: App
           status:
             replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}

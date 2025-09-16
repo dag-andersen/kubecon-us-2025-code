@@ -12,3 +12,6 @@ spec:
     - path: helm/my-chart
       repoURL: https://github.com/dag-andersen/kubecon-us-2025-code.git
       targetRevision: main
+      helm:
+        valuesObject:
+          replicaCount: 1

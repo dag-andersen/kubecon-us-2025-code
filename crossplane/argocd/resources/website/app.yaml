@@ -4,4 +4,4 @@ metadata:
   namespace: default
   name: my-app
 spec:
-  image: dfdfdfdfdf
+  image: nginx:latest
