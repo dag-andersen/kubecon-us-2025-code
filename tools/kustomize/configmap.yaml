@@ -8,7 +8,7 @@ data:
   app.name: "Simple Web Application"
   app.properties: |
     app.name=Simple Web Application
-    app.version=1.0.0
+    app.version=1.0.1
     app.environment=base
     debug.enabled=false
   nginx.conf: |
