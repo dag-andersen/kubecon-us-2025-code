@@ -1,7 +1,0 @@
-apiVersion: example.my-domain.io/v1
-kind: App
-metadata:
-  namespace: default
-  name: my-app
-spec:
-  image: nginx:latest
