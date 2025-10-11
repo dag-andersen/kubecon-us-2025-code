@@ -5,6 +5,10 @@ cluster-name := kubecon
 # kubectl -n flux-system port-forward svc/capacitor 9000:9000
 # https://fluxcd.io/blog/2024/02/introducing-capacitor/
 
+capacitor-ui:
+	kubectl -n flux-system port-forward svc/capacitor 9000:9000 &
+	open http://localhost:9000
+
 # kubectl tree -n default applications.kro.run/my-application-instance
 # vs.
 # flux tree kustomization kro-applications
@@ -26,5 +30,17 @@ install-flux:
 
 install-kro:
 	kubectl apply -f kro/apps
+
+install-helm:
+	kubectl apply -f helm/apps
+
+install-kustomize:
+	kubectl apply -f kustomize/apps
+
+install-kubevela:
+	kubectl apply -f kubevela/apps
+
+install-crossplane:
+	kubectl apply -f crossplane/apps
 
 run: create-cluster install-flux
