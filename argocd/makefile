@@ -7,7 +7,7 @@ gen-secret:
 
 create-cluster:
 	kind delete cluster --name ${cluster-name} || true
-	kind create cluster --name ${cluster-name}
+	kind create cluster --name ${cluster-name} --config ../kind.yaml
 
 install-argocd:
 	helm repo add argo https://argoproj.github.io/argo-helm || true
