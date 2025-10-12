@@ -8,6 +8,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
   sources:
     - path: tools/crossplane/compositions
       repoURL: https://github.com/dag-andersen/kubecon-us-2025-code.git

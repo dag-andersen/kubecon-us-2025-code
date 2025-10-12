@@ -4,4 +4,4 @@ metadata:
   namespace: default
   name: website-example
 spec:
-  image: nginx:latest
+  image: nginx:does-not-exist
