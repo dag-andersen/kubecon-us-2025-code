@@ -37,6 +37,7 @@ open-ui:
 		--for=condition=Available=True \
 		--namespace=argocd \
 		--timeout=120s
+	sleep 5
 	open http://localhost:8082
 	argocd admin dashboard --port 8082
 
