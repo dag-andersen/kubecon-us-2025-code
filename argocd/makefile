@@ -10,10 +10,9 @@ create-cluster:
 	kind create cluster --name ${cluster-name}
 
 install-argocd:
-	kubectl create namespace argocd || true
-	helm repo add argo https://argoproj.github.io/argo-helm
-	helm repo update
-	helm upgrade --install argocd argo/argo-cd -n argocd -f helm-values.yaml
+	helm repo add argo https://argoproj.github.io/argo-helm || true
+	helm repo update || true
+	helm upgrade --install argocd argo/argo-cd -n argocd -f helm-values.yaml --create-namespace
 	kubectl apply -f secrets/secret.yaml
 
 install-helm:
