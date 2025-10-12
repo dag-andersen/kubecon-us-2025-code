@@ -1,13 +1,13 @@
 apiVersion: apiextensions.crossplane.io/v2
 kind: CompositeResourceDefinition
 metadata:
-  name: apps.example.my-domain.io
+  name: websites.example.my-domain.io
 spec:
   scope: Namespaced
   group: example.my-domain.io
   names:
-    kind: App
-    plural: apps
+    kind: Website
+    plural: websites
   versions:
   - name: v1
     served: true
@@ -31,5 +31,5 @@ spec:
               description: The number replicas.
               type: integer
             address:
-              description: The app's IP address.
+              description: The website's IP address.
               type: string

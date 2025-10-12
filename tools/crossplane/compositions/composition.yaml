@@ -1,11 +1,11 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: app-templated-yaml
+  name: website-templated-yaml
 spec:
   compositeTypeRef:
     apiVersion: example.my-domain.io/v1
-    kind: App
+    kind: Website
   mode: Pipeline
   pipeline:
 
@@ -19,7 +19,7 @@ spec:
       inline:
         template: |
           ---
-          apiVersion: apps/v1
+          apiVersion: websites/v1
           kind: Deployment
           metadata:
             annotations:
@@ -28,19 +28,19 @@ spec:
               gotemplating.fn.crossplane.io/ready: "True"
               {{ end }}
             labels:
-              example.crossplane.io/app: {{ .observed.composite.resource.metadata.name }}
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
           spec:
             replicas: 2
             selector:
               matchLabels:
-                example.crossplane.io/app: {{ .observed.composite.resource.metadata.name }}
+                example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
             template:
               metadata:
                 labels:
-                  example.crossplane.io/app: {{ .observed.composite.resource.metadata.name }}
+                  example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
               spec:
                 containers:
-                - name: app
+                - name: website
                   image: {{ .observed.composite.resource.spec.image }}
                   ports:
                   - containerPort: 80
@@ -54,22 +54,22 @@ spec:
               gotemplating.fn.crossplane.io/ready: "True"
               {{ end }}
             labels:
-              example.crossplane.io/app: {{ .observed.composite.resource.metadata.name }}
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
           spec:
             selector:
-              example.crossplane.io/app: {{ .observed.composite.resource.metadata.name }}
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
             ports:
             - protocol: TCP
               port: 8080
               targetPort: 80
           ---
           apiVersion: example.my-domain.io/v1
-          kind: App
+          kind: Website
           status:
             replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}
             address: {{ get (getComposedResource . "service").spec "clusterIP" | default "" | quote }}  
 # apiVersion: example.crossplane.io/v1
-# kind: App
+# kind: Website
 # status:
 #   replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}
 #   address: {{ get (getComposedResource . "service").spec "clusterIP" | default "" | quote }}       
