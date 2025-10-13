@@ -11,3 +11,8 @@ spec:
     kind: GitRepository
     name: flux-system
   targetNamespace: default
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: tools-simple-web-app
+      namespace: default

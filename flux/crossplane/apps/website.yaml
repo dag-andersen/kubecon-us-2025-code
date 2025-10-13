@@ -11,6 +11,7 @@ spec:
     kind: GitRepository
     name: flux-system
   targetNamespace: default
+  wait: true # Tells the controller to wait for all resources to be ready by performing health checks.
   healthCheckExprs:
     - apiVersion: example.my-domain.io/v1
       kind: Website
