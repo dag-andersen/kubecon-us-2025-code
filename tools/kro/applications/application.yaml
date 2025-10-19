@@ -1,8 +1,8 @@
 apiVersion: kro.run/v1alpha1
-kind: Application
+kind: Website
 metadata:
-  name: my-application-instance
+  name: website-example
 spec:
-  name: my-awesome-app
+  name: website-example
   ingress:
     enabled: true
