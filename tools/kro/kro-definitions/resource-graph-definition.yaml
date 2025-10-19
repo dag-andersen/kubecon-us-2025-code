@@ -11,9 +11,13 @@ spec:
     spec:
       # Spec fields that users can provide.
       name: string
-      image: string | default="nginx"
+      deployment:
+        image: string | default="nginx"
+        replicas: integer | default=3
+      service:
+        port: integer | default=80
       ingress:
-        enabled: boolean | default=false
+        hostname: string
     status:
       # Fields the controller will inject into instances status.
       deploymentConditions: ${deployment.status.conditions}
@@ -37,7 +41,7 @@ spec:
           annotations:
             argocd.argoproj.io/tracking-id: ${schema.metadata.?annotations["argocd.argoproj.io/tracking-id"]}
         spec:
-          replicas: 3
+          replicas: ${schema.spec.deployment.replicas}
           selector:
             matchLabels:
               app: ${schema.spec.name}
@@ -48,9 +52,9 @@ spec:
             spec:
               containers:
                 - name: ${schema.spec.name}
-                  image: ${schema.spec.image} # Use the image provided by user
+                  image: ${schema.spec.deployment.image} # Use the image provided by user
                   ports:
-                    - containerPort: 80
+                    - containerPort: ${schema.spec.service.port}
 
     - id: service
       template:
@@ -71,12 +75,10 @@ spec:
           selector: ${deployment.spec.selector.matchLabels} # Use the deployment selector
           ports:
             - protocol: TCP
-              port: 80
-              targetPort: 80
+              port: ${schema.spec.service.port}
+              targetPort: ${schema.spec.service.port}
 
     - id: ingress
-      includeWhen:
-        - ${schema.spec.ingress.enabled} # Only include if the user wants to create an Ingress
       template:
         apiVersion: networking.k8s.io/v1
         kind: Ingress
@@ -95,7 +97,7 @@ spec:
             alb.ingress.kubernetes.io/scheme: internet-facing
             alb.ingress.kubernetes.io/target-type: ip
             alb.ingress.kubernetes.io/healthcheck-path: /health
-            alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+            alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": ${schema.spec.service.port}}]'
             alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
         spec:
           rules:
@@ -105,6 +107,6 @@ spec:
                     pathType: Prefix
                     backend:
                       service:
-                        name: ${service.metadata.name} # Use the service name
+                        name: ${schema.spec.name}-service
                         port:
-                          number: 80
+                          number: ${schema.spec.service.port}

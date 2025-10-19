@@ -5,4 +5,9 @@ metadata:
 spec:
   name: website-example
   ingress:
-    enabled: true
+    hostname: website-example.example.com
+  service:
+    port: 80
+  deployment:
+    image: nginx:1.21-alpine
+    replicas: 2
