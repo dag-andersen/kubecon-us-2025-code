@@ -4,4 +4,11 @@ metadata:
   namespace: default
   name: website-example
 spec:
-  image: nginx:does-not-exist
+  name: website-example
+  ingress:
+    hostname: website-example.example.com
+  service:
+    port: 80
+  deployment:
+    image: nginx:1.21-alpine
+    replicas: 2

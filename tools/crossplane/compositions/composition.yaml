@@ -9,7 +9,7 @@ spec:
   mode: Pipeline
   pipeline:
 
-  - step: create-deployment-and-service
+  - step: create-deployment-service-and-ingress
     functionRef:
       name: crossplane-contrib-function-go-templating
     input:
@@ -30,7 +30,7 @@ spec:
             labels:
               example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
           spec:
-            replicas: 2
+            replicas: {{ .observed.composite.resource.spec.deployment.replicas | default 1 }}
             selector:
               matchLabels:
                 example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
@@ -41,9 +41,9 @@ spec:
               spec:
                 containers:
                 - name: website
-                  image: {{ .observed.composite.resource.spec.image }}
+                  image: {{ .observed.composite.resource.spec.deployment.image }}
                   ports:
-                  - containerPort: 80
+                  - containerPort: {{ .observed.composite.resource.spec.service.port | default 80 }}
           ---
           apiVersion: v1
           kind: Service
@@ -60,8 +60,31 @@ spec:
               example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
             ports:
             - protocol: TCP
-              port: 8080
-              targetPort: 80
+              port: {{ .observed.composite.resource.spec.service.port | default 80 }}
+              targetPort: {{ .observed.composite.resource.spec.service.port | default 80 }}
+          ---
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            annotations:
+              gotemplating.fn.crossplane.io/composition-resource-name: ingress
+              {{ if (get (getComposedResource . "ingress").status "loadBalancer") }}
+              gotemplating.fn.crossplane.io/ready: "True"
+              {{ end }}
+            labels:
+              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
+          spec:
+            rules:
+            - host: {{ .observed.composite.resource.spec.ingress.hostname }}
+              http:
+                paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: {{ .observed.composite.resource.metadata.name }}
+                      port:
+                        number: {{ .observed.composite.resource.spec.service.port | default 80 }}
           ---
           apiVersion: example.my-domain.io/v1
           kind: Website

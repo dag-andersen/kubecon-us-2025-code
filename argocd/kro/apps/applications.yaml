@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kro-applications
+  name: kro-website-example
   namespace: argocd
 spec:
   project: default

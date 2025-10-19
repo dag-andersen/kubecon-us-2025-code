@@ -19,17 +19,52 @@ spec:
         spec:
           type: object
           properties:
-            image:
-              description: The container image.
+            name:
+              description: The name of the website.
               type: string
+            deployment:
+              description: Deployment configuration.
+              type: object
+              properties:
+                image:
+                  description: The container image.
+                  type: string
+                replicas:
+                  description: The number of replicas.
+                  type: integer
+                  default: 1
+              required:
+              - image
+            service:
+              description: Service configuration.
+              type: object
+              properties:
+                port:
+                  description: The service port.
+                  type: integer
+                  default: 80
+              required:
+              - port
+            ingress:
+              description: Ingress configuration.
+              type: object
+              properties:
+                hostname:
+                  description: The hostname for the ingress.
+                  type: string
+              required:
+              - hostname
           required:
-          - image
+          - name
+          - deployment
+          - service
+          - ingress
         status:
           type: object
           properties:
             replicas:
-              description: The number replicas.
+              description: The number of available replicas.
               type: integer
             address:
-              description: The website's IP address.
+              description: The service's cluster IP address.
               type: string
