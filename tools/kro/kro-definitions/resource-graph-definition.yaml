@@ -29,7 +29,7 @@ spec:
           name: ${schema.spec.name} # Use the name provided by user
           ownerReferences:
             - apiVersion: kro.run/v1alpha1
-              kind: ${schema.kind}
+              kind: Application
               name: ${schema.metadata.name}
               uid: ${schema.metadata.uid}
               blockOwnerDeletion: true
@@ -60,7 +60,7 @@ spec:
           name: ${schema.spec.name}-service
           ownerReferences:
             - apiVersion: kro.run/v1alpha1
-              kind: ${schema.kind}
+              kind: Application
               name: ${schema.metadata.name}
               uid: ${schema.metadata.uid}
               blockOwnerDeletion: true
@@ -84,7 +84,7 @@ spec:
           name: ${schema.spec.name}-ingress
           ownerReferences:
             - apiVersion: kro.run/v1alpha1
-              kind: ${schema.kind}
+              kind: Application
               name: ${schema.metadata.name}
               uid: ${schema.metadata.uid}
               blockOwnerDeletion: true
