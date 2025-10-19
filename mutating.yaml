@@ -1,0 +1,54 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicy
+metadata:
+  name: "label-adder.example.com"
+spec:
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["*"]
+      apiVersions: ["*"]
+      operations:  ["*"]
+      resources:   ["deployments"]
+  failurePolicy: Fail
+  reinvocationPolicy: IfNeeded
+  mutations:
+    - patchType: "ApplyConfiguration"
+      applyConfiguration:
+        expression: >
+          Object{
+            metadata: Object.metadata{
+              labels: Object.metadata.labels{
+                find: "me"
+              }
+            }
+          }
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicyBinding
+metadata:
+  name: label-adder-binding
+spec:
+  policyName: label-adder.example.com
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "demo-policy.example.com"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["*"]
+      apiVersions: ["*"]
+      operations:  ["*"]
+      resources:   ["deployments"]
+  validations:
+    - expression: "object.spec.replicas <= 5"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: "demo-binding-test.example.com"
+spec:
+  policyName: "demo-policy.example.com"
+  validationActions: [Deny]
