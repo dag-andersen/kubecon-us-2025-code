@@ -3,13 +3,10 @@ kind: ResourceGraphDefinition
 metadata:
   name: website-template
 spec:
-  # kro uses this simple schema to create your CRD schema and apply it
-  # The schema defines what users can provide when they instantiate the RGD (create an instance).
   schema:
     apiVersion: v1alpha1
     kind: Website
     spec:
-      # Spec fields that users can provide.
       name: string
       deployment:
         image: string | default="nginx"
@@ -19,11 +16,9 @@ spec:
       ingress:
         hostname: string
     status:
-      # Fields the controller will inject into instances status.
       deploymentConditions: ${deployment.status.conditions}
       availableReplicas: ${deployment.status.availableReplicas}
 
-  # Define the resources this API will manage.
   resources:
     - id: deployment
       template:

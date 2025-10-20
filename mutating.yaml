@@ -1,54 +1,49 @@
+
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingAdmissionPolicy
 metadata:
-  name: "label-adder.example.com"
+  name: "security-enforcer.example.com"
 spec:
   matchConstraints:
     resourceRules:
-    - apiGroups:   ["*"]
-      apiVersions: ["*"]
-      operations:  ["*"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
       resources:   ["deployments"]
   failurePolicy: Fail
   reinvocationPolicy: IfNeeded
+  variables:
+    - name: containerCount
+      expression: "size(object.spec.template.spec.containers)"
+    - name: containersWithSecurityContext
+      expression: |
+        has(object.spec.template.spec.containers) ?
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+          .filter(idx, idx < variables.containerCount)
+          .filter(idx, has(object.spec.template.spec.containers[idx].securityContext))
+        : []
   mutations:
-    - patchType: "ApplyConfiguration"
-      applyConfiguration:
-        expression: >
-          Object{
-            metadata: Object.metadata{
-              labels: Object.metadata.labels{
-                find: "me"
-              }
-            }
+  - patchType: "JSONPatch"
+    jsonPatch:
+      expression: |
+        variables.containersWithSecurityContext.map(idx, 
+          JSONPatch{
+            op: 'add',
+            path: '/spec/template/spec/containers/' + string(idx) + '/securityContext/privileged',
+            value: false
           }
+        ) +
+        variables.containersWithSecurityContext.map(idx, 
+          JSONPatch{
+            op: 'add',
+            path: '/spec/template/spec/containers/' + string(idx) + '/securityContext/allowPrivilegeEscalation',
+            value: false
+          }
+        )
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingAdmissionPolicyBinding
 metadata:
-  name: label-adder-binding
+  name: "security-enforcer-binding.example.com"
 spec:
-  policyName: label-adder.example.com
----
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingAdmissionPolicy
-metadata:
-  name: "demo-policy.example.com"
-spec:
-  failurePolicy: Fail
-  matchConstraints:
-    resourceRules:
-    - apiGroups:   ["*"]
-      apiVersions: ["*"]
-      operations:  ["*"]
-      resources:   ["deployments"]
-  validations:
-    - expression: "object.spec.replicas <= 5"
----
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingAdmissionPolicyBinding
-metadata:
-  name: "demo-binding-test.example.com"
-spec:
-  policyName: "demo-policy.example.com"
-  validationActions: [Deny]
+  policyName: "security-enforcer.example.com"

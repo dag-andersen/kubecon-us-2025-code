@@ -1,5 +1,4 @@
 ├── base
-│   ├── configmap.yaml
 │   ├── deployment.yaml
 │   ├── ingress.yaml
 │   ├── kustomization.yaml
