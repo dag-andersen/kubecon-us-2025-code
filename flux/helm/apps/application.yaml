@@ -8,8 +8,8 @@ spec:
   ref:
     branch: main
   secretRef:
-    name: private-repo
-  url: https://github.com/dag-andersen/kubecon-us-2025-code.git
+    name: flux-system
+  url: ssh://git@github.com/dag-andersen/kubecon-us-2025-code
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease

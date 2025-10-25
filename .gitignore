@@ -2,3 +2,5 @@
 **/secrets/
 
 .DS_Store
+
+tools/cdk8s/imports/
