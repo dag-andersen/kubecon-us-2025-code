@@ -1,0 +1,10 @@
+/// Production environment configuration
+/// This amends the base template with production-specific values
+amends "template.pkl"
+
+namespace = "production"
+replicas = 5
+image = "nginx"
+tag = "1.21.6"
+host = "myapp-prod.example.com"
+

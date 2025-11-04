@@ -1,0 +1,121 @@
+/// Base template for Kubernetes application resources
+/// This template defines Deployment, Service, and Ingress resources
+module template
+
+// Environment configuration properties
+appName: String = "my-app"
+namespace: String
+replicas: Int(this >= 1)
+image: String
+tag: String
+host: String
+ingressClass: String = "nginx"
+
+// Derived values
+serviceName: String = "\(appName)-service"
+ingressName: String = "\(appName)-ingress"
+
+// Labels used across resources
+labels: Map<String, String> = Map("app", appName)
+
+// Deployment resource
+deployment = new {
+  apiVersion = "apps/v1"
+  kind = "Deployment"
+  metadata {
+    name = appName
+    namespace = module.namespace
+  }
+  spec {
+    replicas = module.replicas
+    selector {
+      matchLabels = module.labels
+    }
+    template {
+      metadata {
+        labels = module.labels
+      }
+      spec {
+        containers {
+          new {
+            name = "app-container"
+            image = "\(module.image):\(module.tag)"
+            ports {
+              new {
+                name = "http"
+                containerPort = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Service resource
+service = new {
+  apiVersion = "v1"
+  kind = "Service"
+  metadata {
+    name = module.serviceName
+    namespace = module.namespace
+  }
+  spec {
+    type = "ClusterIP"
+    selector = module.labels
+    ports {
+      new {
+        name = "http"
+        port = 80
+        targetPort = "http"
+        protocol = "TCP"
+      }
+    }
+  }
+}
+
+// Ingress resource
+ingress = new {
+  apiVersion = "networking.k8s.io/v1"
+  kind = "Ingress"
+  metadata {
+    name = module.ingressName
+    namespace = module.namespace
+    annotations {
+      ["kubernetes.io/ingress.class"] = module.ingressClass
+    }
+  }
+  spec {
+    rules {
+      new {
+        host = module.host
+        http {
+          paths {
+            new {
+              path = "/"
+              pathType = "Prefix"
+              backend {
+                service {
+                  name = module.serviceName
+                  port {
+                    number = 80
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Output all resources as a list
+output {
+  renderer = new YamlRenderer {
+    isStream = true
+  }
+  value = List(deployment, service, ingress)
+}
+
