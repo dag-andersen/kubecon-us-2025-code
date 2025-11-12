@@ -10,5 +10,5 @@ spec:
   service:
     port: 80
   deployment:
-    image: nginx:2.0.0
+    image: nginx:alpine
     replicas: 2
