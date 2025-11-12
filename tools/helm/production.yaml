@@ -1,7 +1,8 @@
 replicaCount: 2
 
 image:
-  repository: my-website:v1
+  repository: nginx
+  tag: alpine
 
 service:
   port: 80
