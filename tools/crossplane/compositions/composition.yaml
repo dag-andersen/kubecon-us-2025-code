@@ -63,29 +63,6 @@ spec:
               port: {{ .observed.composite.resource.spec.service.port | default 80 }}
               targetPort: {{ .observed.composite.resource.spec.service.port | default 80 }}
           ---
-          apiVersion: networking.k8s.io/v1
-          kind: Ingress
-          metadata:
-            annotations:
-              gotemplating.fn.crossplane.io/composition-resource-name: ingress
-              {{ if (get (getComposedResource . "ingress").status "loadBalancer") }}
-              gotemplating.fn.crossplane.io/ready: "True"
-              {{ end }}
-            labels:
-              example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
-          spec:
-            rules:
-            - host: {{ .observed.composite.resource.spec.ingress.hostname }}
-              http:
-                paths:
-                - path: /
-                  pathType: Prefix
-                  backend:
-                    service:
-                      name: {{ .observed.composite.resource.metadata.name }}
-                      port:
-                        number: {{ .observed.composite.resource.spec.service.port | default 80 }}
-          ---
           apiVersion: example.my-domain.io/v1
           kind: Website
           status:
