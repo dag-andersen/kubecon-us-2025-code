@@ -109,6 +109,27 @@ spec:
           resources:
           - name: deployment
           conditions:
+          - type: Ready
+            status: 'True'
+        setConditions:
+        - target: Composite
+          force: true
+          condition:
+            type: RolloutCompleted
+            status: 'True'
+            reason: ReplicaSetUpdated
+            message: "replica set updated"
+        createEvents:
+        - target: Composite
+          event:
+            type: Normal
+            reason: ReplicaSetUpdated
+            message: "replica set updated"
+      - matchers:
+        - type: AnyResourceMatchesAnyCondition
+          resources:
+          - name: deployment
+          conditions:
           - type: Progressing
             status: 'False'
             reason: ProgressDeadlineExceeded
