@@ -97,36 +97,36 @@ spec:
 #   replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}
 #   address: {{ get (getComposedResource . "service").spec "clusterIP" | default "" | quote }}       
 
-  - step: status
-    functionRef:
-      name: crossplane-contrib-function-status-transformer
-    input:
-      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
-      kind: StatusTransformation
-      statusConditionHooks:
-      - matchers:
-        - type: AnyResourceMatchesAnyCondition
-          resources:
-          - name: deployment
-          conditions:
-          - type: Progressing
-            status: 'False'
-            reason: ProgressDeadlineExceeded
-        setConditions:
-        - target: Composite
-          force: true
-          condition:
-            type: RolloutCompleted
-            status: 'False'
-            reason: ProgressDeadlineExceeded
-            message: "failed to sync app"
-        createEvents:
-        - target: Composite
-          event:
-            type: Warning
-            reason: FailedToSync
-            message: "failed to sync app"
+  # - step: status
+  #   functionRef:
+  #     name: crossplane-contrib-function-status-transformer
+  #   input:
+  #     apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
+  #     kind: StatusTransformation
+  #     statusConditionHooks:
+  #     - matchers:
+  #       - type: AnyResourceMatchesAnyCondition
+  #         resources:
+  #         - name: deployment
+  #         conditions:
+  #         - type: Progressing
+  #           status: 'False'
+  #           reason: ProgressDeadlineExceeded
+  #       setConditions:
+  #       - target: Composite
+  #         force: true
+  #         condition:
+  #           type: RolloutCompleted
+  #           status: 'False'
+  #           reason: ProgressDeadlineExceeded
+  #           message: "failed to sync app"
+  #       createEvents:
+  #       - target: Composite
+  #         event:
+  #           type: Warning
+  #           reason: FailedToSync
+  #           message: "failed to sync app"
 
-  - step: crossplane-contrib-function-auto-ready
-    functionRef:
-      name: crossplane-contrib-function-auto-ready
+  # - step: crossplane-contrib-function-auto-ready
+  #   functionRef:
+  #     name: crossplane-contrib-function-auto-ready
