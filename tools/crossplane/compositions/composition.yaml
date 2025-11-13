@@ -110,15 +110,15 @@ spec:
           - name: deployment
           conditions:
           - type: Progressing
-            status: 'True'
-            reason: ReplicaSetUpdated
+            status: 'False'
+            reason: ProgressDeadlineExceeded
         setConditions:
         - target: Composite
           force: true
           condition:
-            type: Test
-            status: 'True'
-            reason: ReconcileError
+            type: Ready
+            status: 'False'
+            reason: ProgressDeadlineExceeded
             message: "failed to sync app"
         createEvents:
         - target: Composite
