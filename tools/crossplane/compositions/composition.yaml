@@ -116,7 +116,7 @@ spec:
         - target: Composite
           force: true
           condition:
-            type: Ready
+            type: RolloutCompleted
             status: 'False'
             reason: ProgressDeadlineExceeded
             message: "failed to sync app"
