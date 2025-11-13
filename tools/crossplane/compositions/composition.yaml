@@ -97,81 +97,81 @@ spec:
 #   replicas: {{ get (getComposedResource . "deployment").status "availableReplicas" | default 0 }}
 #   address: {{ get (getComposedResource . "service").spec "clusterIP" | default "" | quote }}       
 
-  - step: status
-    functionRef:
-      name: crossplane-contrib-function-status-transformer
-    input:
-      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
-      kind: StatusTransformation
-      statusConditionHooks:
-      - matchers:
-        - type: AnyResourceMatchesAnyCondition
-          resources:
-          - name: deployment
-          conditions:
-          - type: Progressing
-            status: 'True'
-        setConditions:
-        - target: Composite
-          force: true
-          condition:
-            type: Progressing
-            status: 'True'
-            reason: Progressing
-            message: "app is progressing"
-      - matchers:
-        - type: AnyResourceMatchesAnyCondition
-          resources:
-          - name: deployment
-          conditions:
-          - type: Available
-            status: 'True'
-        setConditions:
-        - target: Composite
-          force: true
-          condition:
-            type: Available
-            status: 'True'
-            reason: Ready
-            message: "app is ready"
-        - target: Composite
-          force: true
-          condition:
-            type: Progressing
-            status: 'False'
-            reason: Progressing
-            message: "app is up to date"
-        createEvents:
-        - target: Composite
-          event:
-            type: Normal
-            reason: Ready
-            message: "app is ready"
-      - matchers:
-        - type: AnyResourceMatchesAnyCondition
-          resources:
-          - name: deployment
-          conditions:
-          - type: Available
-            status: 'False'
-          - type: Progressing
-            status: 'False'
-            reason: ProgressDeadlineExceeded
-        setConditions:
-        - target: Composite
-          force: true
-          condition:
-            type: Available
-            status: 'False'
-            reason: ReconcileError
-            message: "failed to sync app"
-        createEvents:
-        - target: Composite
-          event:
-            type: Warning
-            reason: FailedToSync
-            message: "failed to sync app"
+  # - step: status
+  #   functionRef:
+  #     name: crossplane-contrib-function-status-transformer
+  #   input:
+  #     apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
+  #     kind: StatusTransformation
+  #     statusConditionHooks:
+  #     - matchers:
+  #       - type: AnyResourceMatchesAnyCondition
+  #         resources:
+  #         - name: deployment
+  #         conditions:
+  #         - type: Progressing
+  #           status: 'True'
+  #       setConditions:
+  #       - target: Composite
+  #         force: true
+  #         condition:
+  #           type: Progressing
+  #           status: 'True'
+  #           reason: Progressing
+  #           message: "app is progressing"
+  #     - matchers:
+  #       - type: AnyResourceMatchesAnyCondition
+  #         resources:
+  #         - name: deployment
+  #         conditions:
+  #         - type: Available
+  #           status: 'True'
+  #       setConditions:
+  #       - target: Composite
+  #         force: true
+  #         condition:
+  #           type: Available
+  #           status: 'True'
+  #           reason: Ready
+  #           message: "app is ready"
+  #       - target: Composite
+  #         force: true
+  #         condition:
+  #           type: Progressing
+  #           status: 'False'
+  #           reason: Progressing
+  #           message: "app is up to date"
+  #       createEvents:
+  #       - target: Composite
+  #         event:
+  #           type: Normal
+  #           reason: Ready
+  #           message: "app is ready"
+  #     - matchers:
+  #       - type: AnyResourceMatchesAnyCondition
+  #         resources:
+  #         - name: deployment
+  #         conditions:
+  #         - type: Available
+  #           status: 'False'
+  #         - type: Progressing
+  #           status: 'False'
+  #           reason: ProgressDeadlineExceeded
+  #       setConditions:
+  #       - target: Composite
+  #         force: true
+  #         condition:
+  #           type: Available
+  #           status: 'False'
+  #           reason: ReconcileError
+  #           message: "failed to sync app"
+  #       createEvents:
+  #       - target: Composite
+  #         event:
+  #           type: Warning
+  #           reason: FailedToSync
+  #           message: "failed to sync app"
 
-  - step: crossplane-contrib-function-auto-ready
-    functionRef:
-      name: crossplane-contrib-function-auto-ready
+  # - step: crossplane-contrib-function-auto-ready
+  #   functionRef:
+  #     name: crossplane-contrib-function-auto-ready
