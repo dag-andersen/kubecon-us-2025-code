@@ -68,9 +68,7 @@ spec:
           metadata:
             annotations:
               gotemplating.fn.crossplane.io/composition-resource-name: ingress
-              {{ if (get (getComposedResource . "ingress").status "loadBalancer") }}
               gotemplating.fn.crossplane.io/ready: "True"
-              {{ end }}
             labels:
               example.crossplane.io/website: {{ .observed.composite.resource.metadata.name }}
           spec:
