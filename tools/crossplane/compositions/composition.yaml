@@ -109,27 +109,6 @@ spec:
           resources:
           - name: deployment
           conditions:
-          - type: Ready
-            status: 'True'
-        setConditions:
-        - target: Composite
-          force: true
-          condition:
-            type: RolloutCompleted
-            status: 'True'
-            reason: ReplicaSetUpdated
-            message: "replica set updated"
-        createEvents:
-        - target: Composite
-          event:
-            type: Normal
-            reason: ReplicaSetUpdated
-            message: "replica set updated"
-      - matchers:
-        - type: AnyResourceMatchesAnyCondition
-          resources:
-          - name: deployment
-          conditions:
           - type: Progressing
             status: 'False'
             reason: ProgressDeadlineExceeded
@@ -148,6 +127,6 @@ spec:
             reason: FailedToSync
             message: "failed to sync app"
 
-  # - step: crossplane-contrib-function-auto-ready
-  #   functionRef:
-  #     name: crossplane-contrib-function-auto-ready
+  - step: crossplane-contrib-function-auto-ready
+    functionRef:
+      name: crossplane-contrib-function-auto-ready
