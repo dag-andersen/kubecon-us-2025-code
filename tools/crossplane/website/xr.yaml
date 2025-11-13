@@ -4,7 +4,7 @@ metadata:
   namespace: default
   name: website-example
 spec:
-  name: website-example
+  name: website-example333
   ingress:
     hostname: website-example.example.com
   service:
