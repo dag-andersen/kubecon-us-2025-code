@@ -15,5 +15,11 @@ spec:
   healthCheckExprs:
     - apiVersion: example.my-domain.io/v1
       kind: Website
-      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
-      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
+      failed: >-
+        status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False') ||
+        status.conditions.filter(e, e.type == 'RolloutCompleted').all(e, e.status == 'False') ||
+        status.conditions.filter(e, e.type == 'Synced').all(e, e.status == 'False')
+      current: >-
+        status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True') &&
+        status.conditions.filter(e, e.type == 'RolloutCompleted').all(e, e.status == 'True') &&
+        status.conditions.filter(e, e.type == 'Synced').all(e, e.status == 'True')
